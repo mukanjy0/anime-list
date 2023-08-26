@@ -1,8 +1,10 @@
 import json
 
 from flask import (Flask, request)
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app, origins="*", supports_credentials=True, methods=['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])
 
 ID = 0
 animes = [];
@@ -33,7 +35,7 @@ def get_anime(id):
     for anime in animes:
         if anime['id'] == id:
             return json.dumps(anime)
-    return "{}"
+    abort(404, f"Post id {id} doesn't exist")
 
 @app.route('/anime/<int:id>', methods=('PUT',))
 def update_anime(id):
@@ -42,7 +44,7 @@ def update_anime(id):
             for key in request.form:
                 anime[key]=request.form[key]
             return json.dumps(anime)
-    return "{}"
+    abort(404, f"Post id {id} doesn't exist")
 
 @app.route('/anime/<int:id>', methods=('PATCH',))
 def patch_anime(id):
@@ -51,7 +53,7 @@ def patch_anime(id):
             for key in request.form:
                 anime[key]=request.form[key]
             return json.dumps(anime)
-    return "{}"
+    abort(404, f"Post id {id} doesn't exist")
 
 @app.route('/anime/<int:id>', methods=('DELETE',))
 def delete_anime(id):
@@ -59,4 +61,4 @@ def delete_anime(id):
         if animes[i]['id'] == id:
             animes.pop(i)
             return json.dumps(animes[i])
-    return "{}"
+    abort(404, f"Post id {id} doesn't exist")
